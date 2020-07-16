@@ -1,0 +1,19 @@
+{
+  "name": "video-poker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moullier/video-poker.git"
+  },
+  "author": "Maria Francis-Moullier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moullier/video-poker/issues"
+  },
+  "homepage": "https://github.com/moullier/video-poker#readme"
+}
