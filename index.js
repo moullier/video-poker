@@ -6,8 +6,9 @@ const deck = ["A♥", "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9
 "A♠", "2♠", "3♠", "4♠", "5♠", "6♠", "7♠", "8♠", "9♠", "T♠", "J♠", "Q♠", "K♠"];
 
 let playDeck = shuffleDeck();
+let playHand = dealHand();
 
-dealHand();
+displayHand();
 
 // shuffle deck
 function shuffleDeck() {
@@ -35,4 +36,17 @@ function dealHand() {
         hand.push(playDeck.pop());
     }
     console.log(hand);
+
+    return hand;
+}
+
+function displayHand() {
+    for(let i = 1; i <= 5; i++) {
+        let temp = $("<p></p>").text(playHand[i-1]);
+        $("#card" + i).append(temp);
+        let cardImg = $("#card" + i + "image");
+        let imageURL = "./assets/JPEG/2C.jpg";
+        cardImg.attr("src", imageURL);
+    }
+    
 }
