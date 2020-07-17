@@ -5,16 +5,18 @@ const deck = ["A♥", "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9
 "A♦", "2♦", "3♦", "4♦", "5♦", "6♦", "7♦", "8♦", "9♦", "T♦", "J♦", "Q♦", "K♦",
 "A♠", "2♠", "3♠", "4♠", "5♠", "6♠", "7♠", "8♠", "9♠", "T♠", "J♠", "Q♠", "K♠"];
 
-let playDeck = shuffleDeck();
-let playHand = dealHand();
+let playDeck;
+let backupCards;
 
-displayHand();
 
 // shuffle deck
 function shuffleDeck() {
-    let tempDeck = deck;
+    let tempDeck = deck.slice(0);
     let shuffledDeck = [];
     let counter = 0;
+    console.log(tempDeck);
+    console.log("deck = ");
+    console.log(deck);
 
     while(tempDeck.length > 0) {
         let index = Math.floor(tempDeck.length * Math.random());
@@ -23,9 +25,11 @@ function shuffleDeck() {
         shuffledDeck.push(cardRemoved[0]);
         counter++;
         // console.log(counter);
-        // console.log(cardRemoved);
+        console.log(cardRemoved);
     }
 
+    console.log("deck = ");
+    console.log(deck);
     console.log(shuffledDeck);
     return shuffledDeck;
 }
@@ -40,13 +44,47 @@ function dealHand() {
     return hand;
 }
 
-function displayHand() {
+function displayHand(hand) {
     for(let i = 1; i <= 5; i++) {
-        let temp = $("<p></p>").text(playHand[i-1]);
-        $("#card" + i).append(temp);
+        // let temp = $("<p></p>").text(hand[i-1]);
+        // $("#card" + i).append(temp);
         let cardImg = $("#card" + i + "image");
-        let imageURL = "./assets/JPEG/2C.jpg";
+
+        let imageURL = generateImageURL(hand[i-1]);
         cardImg.attr("src", imageURL);
     }
     
+}
+
+function dealNewHand() {
+    console.log("dealing a new hand");
+    playDeck = shuffleDeck();
+    console.log(playDeck);
+    let dispHand = dealHand();
+    console.log(dispHand);
+    backupCards = dealHand();
+    displayHand(dispHand);
+
+}
+
+function generateImageURL(cardName) {
+    console.log(cardName);
+    arrayName = cardName.split("");
+    console.log(arrayName);
+    let suit = "";
+    switch(arrayName[1]) {
+    case "♥":
+        suit = "H";
+        break;
+    case "♣":
+        suit = "C";
+        break;
+    case "♦":
+        suit = "D";
+        break;
+    case "♠":
+        suit = "S";    
+    }
+
+    return `./assets/images/${arrayName[0]}${suit}.jpg`;
 }
