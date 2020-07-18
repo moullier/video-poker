@@ -13,30 +13,40 @@
         integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
         crossorigin="anonymous"
     />
-    <!-- <link rel="stylesheet" href="./assets/css/style.css" /> -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Video Poker</title>
 </head>
 <body>
     <div class="container">
         <div class="row justify-content-center">
-            <div id="card1" class="col-2">Card 1
-                <img class="img-fluid" id="card1image" src="./assets/images/blue_back.jpg">
+            <div id="card1" class="col-2 text-center">
+                <span class="initiallyHidden" id="card1hold">HOLD</span>
+                <img class="img-fluid mb-2" id="card1image" value="1" src="./assets/images/blue_back.jpg">
+                <button class="btn btn-secondary hold-btn" id="card1btn" value="1">Hold</button>
             </div>
-            <div id="card2" class="col-2">Card 2
-                <img class="img-fluid" id="card2image" src="./assets/images/blue_back.jpg">
+            <div id="card2" class="col-2 text-center">
+                <span class="initiallyHidden" id="card2hold">HOLD</span>
+                <img class="img-fluid mb-2" id="card2image" value="2" src="./assets/images/blue_back.jpg">
+                <button class="btn btn-secondary hold-btn" id="card2btn" value="2">Hold</button>
             </div>
-            <div id="card3" class="col-2">Card 3
-                <img class="img-fluid" id="card3image" src="./assets/images/blue_back.jpg">
+            <div id="card3" class="col-2 text-center">
+                <span class="initiallyHidden" id="card3hold">HOLD</span>
+                <img class="img-fluid mb-2" id="card3image" value="3" src="./assets/images/blue_back.jpg">
+                <button class="btn btn-secondary hold-btn" id="card3btn" value="3">Hold</button>
             </div>
-            <div id="card4" class="col-2">Card 4
-                <img class="img-fluid" id="card4image" src="./assets/images/blue_back.jpg">
+            <div id="card4" class="col-2 text-center">
+                <span class="initiallyHidden" id="card4hold">HOLD</span>
+                <img class="img-fluid mb-2" id="card4image" value="4" src="./assets/images/blue_back.jpg">
+                <button class="btn btn-secondary hold-btn" id="card4btn" value="4">Hold</button>
             </div>
-            <div id="card5" class="col-2">Card 5
-                <img class="img-fluid" id="card5image" src="./assets/images/blue_back.jpg">
+            <div id="card5" class="col-2 text-center">
+                <span class="initiallyHidden" id="card5hold">HOLD</span>
+                <img class="img-fluid mb-2" id="card5image" value="5" src="./assets/images/blue_back.jpg">
+                <button class="btn btn-secondary hold-btn" id="card5btn" value="5">Hold</button>
             </div>
         </div>
-        <div class = "row justify-content-center">
-            <div class="col-2">
+        <div class = "row text-center mt-3">
+            <div class="col-12">
                 <button class="btn btn-primary" onclick="dealNewHand()">Deal</button>
             </div>
         </div>

@@ -14,9 +14,6 @@ function shuffleDeck() {
     let tempDeck = deck.slice(0);
     let shuffledDeck = [];
     let counter = 0;
-    console.log(tempDeck);
-    console.log("deck = ");
-    console.log(deck);
 
     while(tempDeck.length > 0) {
         let index = Math.floor(tempDeck.length * Math.random());
@@ -28,8 +25,6 @@ function shuffleDeck() {
         console.log(cardRemoved);
     }
 
-    console.log("deck = ");
-    console.log(deck);
     console.log(shuffledDeck);
     return shuffledDeck;
 }
@@ -39,7 +34,6 @@ function dealHand() {
     for(let i = 0; i < 5; i++) {
         hand.push(playDeck.pop());
     }
-    console.log(hand);
 
     return hand;
 }
@@ -63,14 +57,14 @@ function dealNewHand() {
     let dispHand = dealHand();
     console.log(dispHand);
     backupCards = dealHand();
+    console.log(backupCards);
     displayHand(dispHand);
 
 }
 
 function generateImageURL(cardName) {
-    console.log(cardName);
+
     arrayName = cardName.split("");
-    console.log(arrayName);
     let suit = "";
     switch(arrayName[1]) {
     case "♥":
@@ -88,3 +82,28 @@ function generateImageURL(cardName) {
 
     return `./assets/images/${arrayName[0]}${suit}.jpg`;
 }
+
+function toggleHold(card) {
+    let holdSpan = $("#card" + card + "hold");
+    if(holdSpan.css("visibility") === "visible") {
+        holdSpan.css("visibility", "hidden");
+    } else {
+        holdSpan.css("visibility", "visible");
+    }
+}
+
+// event listeners
+
+$('.hold-btn').click(function(event){
+    let cardClicked = event.target.value;
+    console.log(cardClicked);
+    toggleHold(cardClicked);
+
+});
+
+$('.img-fluid').click(function(event){
+    let cardClicked = parseInt(event.target.attributes[2].value);
+    console.log(cardClicked);
+    toggleHold(cardClicked);
+
+});
