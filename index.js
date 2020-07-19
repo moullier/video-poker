@@ -7,6 +7,8 @@ const deck = ["A♥", "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9
 
 let playDeck;
 let backupCards;
+let heldCards = [false, false, false, false, false];
+let holdableState = false;
 
 
 // shuffle deck
@@ -52,6 +54,8 @@ function displayHand(hand) {
 
 function dealNewHand() {
     console.log("dealing a new hand");
+    $('.hold-btn').prop('disabled', false);
+    holdableState = true;
     playDeck = shuffleDeck();
     console.log(playDeck);
     let dispHand = dealHand();
@@ -85,25 +89,31 @@ function generateImageURL(cardName) {
 
 function toggleHold(card) {
     let holdSpan = $("#card" + card + "hold");
-    if(holdSpan.css("visibility") === "visible") {
+
+    if(heldCards[card - 1] == true) {
         holdSpan.css("visibility", "hidden");
+        heldCards[card - 1] = false;
     } else {
         holdSpan.css("visibility", "visible");
+        heldCards[card - 1] = true;
     }
+    console.log(heldCards);
 }
 
 // event listeners
 
 $('.hold-btn').click(function(event){
-    let cardClicked = event.target.value;
-    console.log(cardClicked);
-    toggleHold(cardClicked);
-
+    if(holdableState) {
+        let cardClicked = event.target.value;
+        console.log(cardClicked);
+        toggleHold(cardClicked);
+    }
 });
 
 $('.img-fluid').click(function(event){
-    let cardClicked = parseInt(event.target.attributes[2].value);
-    console.log(cardClicked);
-    toggleHold(cardClicked);
-
+    if(holdableState) {
+        let cardClicked = parseInt(event.target.attributes[2].value);
+        console.log(cardClicked);
+        toggleHold(cardClicked);
+    }
 });
