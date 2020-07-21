@@ -4,6 +4,7 @@ const deck = ["A♥", "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9
 "A♣", "2♣", "3♣", "4♣", "5♣", "6♣", "7♣", "8♣", "9♣", "T♣", "J♣", "Q♣", "K♣",
 "A♦", "2♦", "3♦", "4♦", "5♦", "6♦", "7♦", "8♦", "9♦", "T♦", "J♦", "Q♦", "K♦",
 "A♠", "2♠", "3♠", "4♠", "5♠", "6♠", "7♠", "8♠", "9♠", "T♠", "J♠", "Q♠", "K♠"];
+const suitsConverstion = ["♣", "♦", "♥", "♠"];
 
 let playDeck;
 let backupCards;
@@ -13,8 +14,12 @@ let handInPlay;
 
 $(document).ready(function() {
     console.log( "ready!" );
-    findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
-    findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
+    // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
+    // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
+    // findWinningHand(["2♠", "3♠", "4♠", "5♠", "A♠"]);
+    findWinningHand(["5♣", "3♠", "5♥", "5♠", "5♦"]);
+    findWinningHand(["5♣", "3♠", "5♥", "8♠", "5♦"]);
+
 })
 
 // shuffle deck
@@ -180,7 +185,22 @@ function findWinningHand(hand) {
 
     console.log(handArray);
 
+    let winningHand = checkRoyalFlush(handArray, hand);
+    if(!winningHand) {
+        winningHand = checkStraightFlush(handArray, hand);
+    }
+
+    if(!winningHand) {
+        winningHand = checkFourOfAKind(handArray, hand);
+    }
+
+    console.log("winningHand = " + winningHand);
+    
+}
+
     // check for royal flush
+function checkRoyalFlush(handArray, hand) {
+
     let royalSuit = null;
     for(let i = 0; i < 4; i++) {
         let sum = 0;
@@ -196,10 +216,82 @@ function findWinningHand(hand) {
     if(royalSuit) {
         console.log("royal flush in suit " + royalSuit);
         return(hand);
+    } else {
+        return null;
     }
 
 }
 
+function checkStraightFlush(handArray, hand) {
+    
+    let straightSuit = null;
+    //check each suit for straight flush
+    for(let i = 0; i < 4; i++) {
+        // iterate through the starting card, from A (low) to 9
+        for(let k = 0; k < 9; k++) {
+
+            // for each starting card, check the five card hand and see if it is a straight flush
+            let sum = 0;
+            for(let j = k; j <= k + 4; j++) {
+                sum += handArray[i][j];
+            }
+            
+            if(sum === 5) {
+                straightSuit = i;
+                console.log("Straight Flush found - suit is " + suitsConverstion[straightSuit]);
+            }
+        }
+    }
+
+    if(straightSuit)
+        return hand;
+    else
+        return null;
+}
+
+// check for any four of a kinds
+function checkFourOfAKind(handArray, hand) {
+
+    let fourCards = null;
+    let returnHand = [];
+
+    for(let cardNum = 0; cardNum < 14; cardNum++) {
+        let sum = 0;
+        let i;
+        for(i = 0; i < 4; i++) {
+            sum += handArray[i][cardNum];
+        }
+
+        console.log(sum);
+        if(sum == 4) {
+            fourCards = cardNum;
+            console.log("Found a four of a kind - " + fourCards);
+            returnHand.push(indexToCard(cardNum) + "♣");
+            returnHand.push(indexToCard(cardNum) + "♦");
+            returnHand.push(indexToCard(cardNum) + "♥");
+            returnHand.push(indexToCard(cardNum) + "♠");
+        }
+    }
+
+    return (fourCards ? returnHand : null);
+}
+
+function indexToCard(arrayIndex) {
+    switch(arrayIndex) {
+        case 0:case 13:
+            return "A";
+        case 12:
+            return "K";
+        case 11:
+            return "Q";
+        case 10:
+            return "J";
+        case 9:
+            return "T";
+        default:
+            return arrayIndex + 1;
+    }
+}
 
 // event listeners
 
