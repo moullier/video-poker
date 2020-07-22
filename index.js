@@ -4,7 +4,8 @@ const deck = ["A♥", "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9
 "A♣", "2♣", "3♣", "4♣", "5♣", "6♣", "7♣", "8♣", "9♣", "T♣", "J♣", "Q♣", "K♣",
 "A♦", "2♦", "3♦", "4♦", "5♦", "6♦", "7♦", "8♦", "9♦", "T♦", "J♦", "Q♦", "K♦",
 "A♠", "2♠", "3♠", "4♠", "5♠", "6♠", "7♠", "8♠", "9♠", "T♠", "J♠", "Q♠", "K♠"];
-const suitsConverstion = ["♣", "♦", "♥", "♠"];
+const suitsConversion = ["♣", "♦", "♥", "♠"];
+const checkWinningHandFunctions = [checkRoyalFlush, checkStraightFlush, checkFourOfAKind];
 
 let playDeck;
 let backupCards;
@@ -17,8 +18,11 @@ $(document).ready(function() {
     // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
     // findWinningHand(["2♠", "3♠", "4♠", "5♠", "A♠"]);
-    findWinningHand(["5♣", "3♠", "5♥", "5♠", "5♦"]);
-    findWinningHand(["5♣", "3♠", "5♥", "8♠", "5♦"]);
+    // findWinningHand(["6♣", "3♠", "5♥", "6♠", "6♦"]);
+    findWinningHand(["5♣", "A♣", "J♣", "7♣", "K♣"]);
+    // findWinningHand(["5♣", "3♠", "5♥", "8♠", "5♦"]);
+    // findWinningHand(["T♠", "2♦", "2♣", "T♣", "T♥"]);
+    //subtractHands(["5♣", "3♠", "5♥", "8♠", "5♦"], ["5♣", "5♥", "5♦"])
 
 })
 
@@ -194,6 +198,14 @@ function findWinningHand(hand) {
         winningHand = checkFourOfAKind(handArray, hand);
     }
 
+    if(!winningHand) {
+        winningHand = checkFullHouse(handArray, hand);
+    }
+
+    if(!winningHand) {
+        winningHand = checkFlush(handArray, hand);
+    }
+
     console.log("winningHand = " + winningHand);
     
 }
@@ -238,7 +250,7 @@ function checkStraightFlush(handArray, hand) {
             
             if(sum === 5) {
                 straightSuit = i;
-                console.log("Straight Flush found - suit is " + suitsConverstion[straightSuit]);
+                console.log("Straight Flush found - suit is " + suitsConversion[straightSuit]);
             }
         }
     }
@@ -262,7 +274,6 @@ function checkFourOfAKind(handArray, hand) {
             sum += handArray[i][cardNum];
         }
 
-        console.log(sum);
         if(sum == 4) {
             fourCards = cardNum;
             console.log("Found a four of a kind - " + fourCards);
@@ -273,9 +284,81 @@ function checkFourOfAKind(handArray, hand) {
         }
     }
 
-    return (fourCards ? returnHand : null);
+    return fourCards ? returnHand : null;
 }
 
+function checkFullHouse(handArray, hand) {
+    // check for three of a kind first
+    let setOfThree = null;
+    setOfThree = checkThreeOfAKind(handArray, hand);
+    console.log(setOfThree);
+
+    // if set of three, check if other two cards are a pair
+    if(setOfThree) {
+        const remainingCards = subtractHands(hand, setOfThree);
+        console.log(remainingCards + " are the remaining cards");
+        console.log(remainingCards[0][0]);
+        console.log(remainingCards[1][0]);
+        if(remainingCards[0][0] == remainingCards[1][0]) {
+            console.log("pair found.");
+            return hand;
+        } else {
+            return setOfThree;
+        }
+    } else {
+        return null;
+    }
+}
+
+// check for any three of a kinds, return the cards if found
+function checkThreeOfAKind(handArray, hand) {
+    let threeCards = null;
+    let returnHand = [];
+
+    for(let cardNum = 0; cardNum < 14; cardNum++) {
+        let sum = 0;
+        let i;
+        for(i = 0; i < 4; i++) {
+            sum += handArray[i][cardNum];
+        }
+
+        // if three of a kind is found, create an array of the three cards
+        if(sum == 3) {
+            threeCards = cardNum;
+            console.log("Found a three of a kind - " + threeCards);
+
+            for(let index = 0; index < 4; index++) {
+                if(handArray[index][cardNum] == 1)
+                returnHand.push("" + indexToCard(cardNum) + suitsConversion[index]);
+            }
+        }
+    }
+    return threeCards ? returnHand : null;
+}
+
+function checkFlush(handArray, hand) {
+    let flush = null;
+
+    for(let suit = 0; suit < 4; suit++) {
+        let sum = 0;
+        for(let cardNum = 0; cardNum < 14; cardNum++) {
+            sum += handArray[suit][cardNum];
+        }
+        console.log(sum);
+
+        // if all cards are the same suit, we have a flush
+        if(sum >= 5) {
+            console.log('found a flush');
+            flush = hand;
+        }
+    }
+    return flush;
+}
+
+
+// Utility functions
+
+// Converts an index from the handArray back to the appropriate card
 function indexToCard(arrayIndex) {
     switch(arrayIndex) {
         case 0:case 13:
@@ -291,6 +374,25 @@ function indexToCard(arrayIndex) {
         default:
             return arrayIndex + 1;
     }
+}
+
+// takes two hand of cards as arguments, removes the cards in the second hand from the first
+// and returns the "difference"
+function subtractHands(hand1, hand2) {
+    let resultHand = [];
+    for(let i = 0; i < hand1.length; i++) {
+        let isMatch = false;
+        for(let j = 0; j < hand2.length; j++) {
+            if(hand1[i] == hand2[j]) {
+                isMatch = true;
+            }
+        }
+        if(!isMatch)
+            resultHand.push(hand1[i]);
+    }
+
+    //console.log(resultHand);
+    return resultHand;
 }
 
 // event listeners
