@@ -19,8 +19,8 @@ $(document).ready(function() {
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
     // findWinningHand(["2♠", "3♠", "4♠", "5♠", "A♠"]);
     // findWinningHand(["6♣", "3♠", "5♥", "6♠", "6♦"]);
-    findWinningHand(["5♣", "A♣", "J♣", "7♣", "K♣"]);
-    // findWinningHand(["5♣", "3♠", "5♥", "8♠", "5♦"]);
+    // findWinningHand(["5♣", "A♦", "J♣", "7♦", "K♥"]);
+    findWinningHand(["5♣", "3♠", "4♠", "2♠", "A♦"]);
     // findWinningHand(["T♠", "2♦", "2♣", "T♣", "T♥"]);
     //subtractHands(["5♣", "3♠", "5♥", "8♠", "5♦"], ["5♣", "5♥", "5♦"])
 
@@ -206,6 +206,10 @@ function findWinningHand(hand) {
         winningHand = checkFlush(handArray, hand);
     }
 
+    if(!winningHand) {
+        winningHand = checkStraight(handArray, hand);
+    }
+
     console.log("winningHand = " + winningHand);
     
 }
@@ -355,6 +359,43 @@ function checkFlush(handArray, hand) {
     return flush;
 }
 
+function checkStraight(handArray, hand) {
+    let reducedArray = [];
+    let straight = null;
+
+    console.log(handArray);
+
+    // reduce all the suits down to one array
+    for(let i = 0; i < 13; i++) {
+
+        let sum = 0;
+        for(let j = 0; j < 4; j++) {
+            sum += handArray[j][i];
+        }
+        reducedArray.push(sum);
+    }
+
+    console.log("reducedArray = " + reducedArray);
+
+    // check to see if a straight exists
+    // iterate through the starting card, from A (low) to 9
+    for(let k = 0; k < 9; k++) {
+
+        // for each starting card, check the five card hand and see if it is a straight flush
+        let sum = 0;
+        for(let j = k; j <= k + 4; j++) {
+            sum += reducedArray[j];
+        }
+        
+        if(sum === 5) {
+            straight = hand;
+            console.log("Straight found - first card is " + indexToCard(k));
+        }
+    }
+
+    return straight;
+}
+
 
 // Utility functions
 
@@ -410,5 +451,6 @@ $('.img-fluid').click(function(event){
         let cardClicked = parseInt(event.target.attributes[2].value);
         console.log(cardClicked);
         toggleHold(cardClicked);
+        $("#card" + cardClicked + "image").css('border', "solid 2px red");
     }
 });
