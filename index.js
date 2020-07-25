@@ -17,10 +17,10 @@ $(document).ready(function() {
     console.log( "ready!" );
     // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
-    // findWinningHand(["2♠", "3♠", "4♠", "5♠", "A♠"]);
+    // findWinningHand(["2♠", "3♠", "4♠", "5♠", "6♦"]);
     // findWinningHand(["6♣", "3♠", "5♥", "6♠", "6♦"]);
-    // findWinningHand(["5♣", "A♦", "J♣", "7♦", "K♥"]);
-    findWinningHand(["5♣", "3♠", "4♠", "2♠", "A♦"]);
+    // findWinningHand(["5♣", "J♠", "T♦", "9♥", "J♦"]);
+    // findWinningHand(["Q♦", "T♦", "T♠", "7♠", "A♦"]);
     // findWinningHand(["T♠", "2♦", "2♣", "T♣", "T♥"]);
     //subtractHands(["5♣", "3♠", "5♥", "8♠", "5♦"], ["5♣", "5♥", "5♦"])
 
@@ -80,7 +80,7 @@ function dealNewHand() {
     backupCards = dealHand();
     console.log(backupCards);
     displayHand(handInPlay);
-    // findWinningHand(handInPlay);
+    findWinningHand(handInPlay);
 
 }
 
@@ -135,6 +135,9 @@ function toggleHold(card) {
     console.log(heldCards);
 }
 
+
+// pass in a hand of five cards, return the cards that make up
+// any winning hand found in the cards
 function findWinningHand(hand) {
     console.log(hand);
 
@@ -209,6 +212,15 @@ function findWinningHand(hand) {
     if(!winningHand) {
         winningHand = checkStraight(handArray, hand);
     }
+
+    if(!winningHand) {
+        winningHand = checkTwoPair(handArray, hand);
+    }
+
+    if(!winningHand) {
+        winningHand = checkJacksOrBetter(handArray, hand);
+    }
+
 
     console.log("winningHand = " + winningHand);
     
@@ -340,6 +352,8 @@ function checkThreeOfAKind(handArray, hand) {
     return threeCards ? returnHand : null;
 }
 
+
+// check if there is a flush, return the whole hand if so
 function checkFlush(handArray, hand) {
     let flush = null;
 
@@ -348,7 +362,7 @@ function checkFlush(handArray, hand) {
         for(let cardNum = 0; cardNum < 14; cardNum++) {
             sum += handArray[suit][cardNum];
         }
-        console.log(sum);
+        // console.log(sum);
 
         // if all cards are the same suit, we have a flush
         if(sum >= 5) {
@@ -359,32 +373,27 @@ function checkFlush(handArray, hand) {
     return flush;
 }
 
+// check if there is a straight, return the whole hand if so
 function checkStraight(handArray, hand) {
-    let reducedArray = [];
     let straight = null;
 
-    console.log(handArray);
+    // console.log(handArray);
 
-    // reduce all the suits down to one array
-    for(let i = 0; i < 13; i++) {
-
-        let sum = 0;
-        for(let j = 0; j < 4; j++) {
-            sum += handArray[j][i];
-        }
-        reducedArray.push(sum);
-    }
+    // reduce array with low and high aces
+    const reducedArray = reduceHandArray(handArray, true);
 
     console.log("reducedArray = " + reducedArray);
 
     // check to see if a straight exists
-    // iterate through the starting card, from A (low) to 9
-    for(let k = 0; k < 9; k++) {
+    // iterate through the starting card, from A (low) to 10
+    for(let k = 0; k < 10; k++) {
 
-        // for each starting card, check the five card hand and see if it is a straight flush
+        // for each starting card, check the five card hand and see if it is a straight
         let sum = 0;
         for(let j = k; j <= k + 4; j++) {
-            sum += reducedArray[j];
+            if(reducedArray[j] > 0) {
+                sum++;
+            }
         }
         
         if(sum === 5) {
@@ -397,7 +406,101 @@ function checkStraight(handArray, hand) {
 }
 
 
+function checkTwoPair(handArray, hand) {
+    let twoPair = null;
+    let returnHand = [];
+
+    const reducedArray = reduceHandArray(handArray, false);
+
+    console.log("reducedArray = " + reducedArray);
+
+    // iterate through reduced Array and find total number of pairs
+    let numberOfPairs = 0;
+
+    for(let i = 0; i < 13; i++) {
+        console.log(reducedArray[i]);
+        if(reducedArray[i] == 2) {
+            numberOfPairs++;
+            console.log("found pair of " + indexToCard(i));
+            returnHand = returnHand.concat(getCardsOfRank(hand, i));
+        }
+    }
+
+    if(numberOfPairs == 2) {
+        twoPair = true;
+    }
+
+    return twoPair ? returnHand : null;
+
+}
+
+function checkJacksOrBetter(handArray, hand) {
+    let jacksOrBetter = false;
+    let returnHand = [];
+
+    const reducedArray = reduceHandArray(handArray, true);
+
+    console.log("reducedArray = " + reducedArray);
+
+    for(let i = 10; i < 14; i++) {
+        console.log(reducedArray[i]);
+        if(reducedArray[i] == 2) {
+            console.log("found pair of " + indexToCard(i));
+            jacksOrBetter = true;
+            returnHand = returnHand.concat(getCardsOfRank(hand, i));
+        }
+    }
+
+    return jacksOrBetter ? returnHand : null;
+}
+
+
+
+
 // Utility functions
+
+// Takes in an array representing the cards in each suit (4 by 13 array)
+// and adds it up for functions where the suit doesn't matter
+// second parameter is a boolean for whether the high ace should be included
+// as well as the low ace
+function reduceHandArray(handArray, withTwoAces) {
+
+    const maxLength = withTwoAces ? 14 : 13;
+    let reducedArray = [];
+
+    // reduce all the suits down to one array
+    for(let i = 0; i < maxLength; i++) {
+
+        let sum = 0;
+        for(let j = 0; j < 4; j++) {
+            sum += handArray[j][i];
+        }
+        reducedArray.push(sum);
+    }
+
+    return reducedArray;
+
+}
+
+// Get cards of a given rank in the hand passed in, and return them
+function getCardsOfRank(hand, rank) {
+    const displayRank = indexToCard(rank);
+    let returnHand = [];
+
+    console.log(displayRank);
+    // iterate through hand and if card matchs the passed in rank,
+    // push the card on the hand to return
+    for(let i = 0; i < hand.length; i++) {
+        let card = hand[i];
+        if(displayRank == card[0]) {
+            returnHand.push(card);
+        }
+    }
+
+
+    console.log("returnhand = " + returnHand);
+    return returnHand;
+}
 
 // Converts an index from the handArray back to the appropriate card
 function indexToCard(arrayIndex) {
@@ -451,6 +554,6 @@ $('.img-fluid').click(function(event){
         let cardClicked = parseInt(event.target.attributes[2].value);
         console.log(cardClicked);
         toggleHold(cardClicked);
-        $("#card" + cardClicked + "image").css('border', "solid 2px red");
+        // $("#card" + cardClicked + "image").css('border', "solid 2px red");
     }
 });
