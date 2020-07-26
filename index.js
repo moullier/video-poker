@@ -15,7 +15,7 @@ let handInPlay;
 
 $(document).ready(function() {
     console.log( "ready!" );
-    // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
+    findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
     // findWinningHand(["2♠", "3♠", "4♠", "5♠", "6♦"]);
     // findWinningHand(["6♣", "3♠", "5♥", "6♠", "6♦"]);
@@ -80,12 +80,21 @@ function dealNewHand() {
     backupCards = dealHand();
     console.log(backupCards);
     displayHand(handInPlay);
-    findWinningHand(handInPlay);
+    const winningHand = findWinningHand(handInPlay);
+
+    if(winningHand) {
+        highlightWinningCards(handInPlay, winningHand);
+    }
 
 }
 
 function dealFillInCards() {
     console.log("dealing fill in cards");
+
+    for(let i = 1; i < 6; i++) {
+        $("#card" + i + "image").css('border', "none");
+    }
+
     $('.hold-btn').prop('disabled', true);
     let funcName = "dealNewHand()";
     $("#dealButton").attr("onclick", funcName);
@@ -99,6 +108,15 @@ function dealFillInCards() {
 
     console.log(handInPlay);
     displayHand(handInPlay);
+
+    const winningHand = findWinningHand(handInPlay);
+
+    if(winningHand) {
+        highlightWinningCards(handInPlay, winningHand);
+    }
+
+    $("#winningHandSpan").text()
+    
 }
 
 function generateImageURL(cardName) {
@@ -222,14 +240,16 @@ function findWinningHand(hand) {
     }
 
 
-    console.log("winningHand = " + winningHand);
+    console.log("winningHand = " + winningHand.name);
+    console.log("winning Hand is " + winningHand.hand);
+    return winningHand;
     
 }
 
-    // check for royal flush
+// check for royal flush
 function checkRoyalFlush(handArray, hand) {
 
-    let royalSuit = null;
+    let royalFlush = null;
     for(let i = 0; i < 4; i++) {
         let sum = 0;
         for(let j = 9; j <= 13; j++) {
@@ -237,17 +257,12 @@ function checkRoyalFlush(handArray, hand) {
         }
         
         if(sum === 5) {
-            royalSuit = i;
+            royalFlush = {hand: hand,
+                        name: "Royal Flush"}
         }
     }
 
-    if(royalSuit) {
-        console.log("royal flush in suit " + royalSuit);
-        return(hand);
-    } else {
-        return null;
-    }
-
+    return royalFlush;
 }
 
 function checkStraightFlush(handArray, hand) {
@@ -454,7 +469,26 @@ function checkJacksOrBetter(handArray, hand) {
     return jacksOrBetter ? returnHand : null;
 }
 
+function highlightWinningCards(hand, winningHand) {
 
+    let cardsToHighlight = [];
+
+    for(let i = 0; i < 5; i++) {
+        winningHand.forEach(card => {
+            if(hand[i] == card) {
+                console.log(hand[i]);
+                cardsToHighlight.push(i + 1);
+            }
+        })
+    }
+
+    console.log(cardsToHighlight);
+    cardsToHighlight.forEach(cardNum => {
+        $("#card" + cardNum + "image").css('border', "solid 2px yellow");
+    })
+
+
+}
 
 
 // Utility functions
@@ -554,6 +588,6 @@ $('.img-fluid').click(function(event){
         let cardClicked = parseInt(event.target.attributes[2].value);
         console.log(cardClicked);
         toggleHold(cardClicked);
-        // $("#card" + cardClicked + "image").css('border', "solid 2px red");
+        
     }
 });
