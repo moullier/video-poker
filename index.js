@@ -111,11 +111,15 @@ function dealFillInCards() {
 
     const winningHand = findWinningHand(handInPlay);
 
+
+
     if(winningHand) {
         highlightWinningCards(handInPlay, winningHand);
+        console.log(winningHand.name);
+        $("#winningHandSpan").text(winningHand.name);
     }
 
-    $("#winningHandSpan").text()
+    
     
 }
 
@@ -239,9 +243,10 @@ function findWinningHand(hand) {
         winningHand = checkJacksOrBetter(handArray, hand);
     }
 
-
-    console.log("winningHand = " + winningHand.name);
-    console.log("winning Hand is " + winningHand.hand);
+    if(winningHand) {
+        console.log("winningHand = " + winningHand.name);
+        console.log("winning Hand is " + winningHand.hand);
+    }
     return winningHand;
     
 }
@@ -257,8 +262,10 @@ function checkRoyalFlush(handArray, hand) {
         }
         
         if(sum === 5) {
-            royalFlush = {hand: hand,
-                        name: "Royal Flush"}
+            royalFlush = {
+                hand: hand,
+                name: "Royal Flush"
+            };
         }
     }
 
@@ -267,7 +274,7 @@ function checkRoyalFlush(handArray, hand) {
 
 function checkStraightFlush(handArray, hand) {
     
-    let straightSuit = null;
+    let straightFlush = null;
     //check each suit for straight flush
     for(let i = 0; i < 4; i++) {
         // iterate through the starting card, from A (low) to 9
@@ -280,16 +287,16 @@ function checkStraightFlush(handArray, hand) {
             }
             
             if(sum === 5) {
-                straightSuit = i;
-                console.log("Straight Flush found - suit is " + suitsConversion[straightSuit]);
+                straightFlush = {
+                    hand: hand,
+                    name: "Straight Flush"
+                };
+                console.log("Straight Flush found");
             }
         }
     }
 
-    if(straightSuit)
-        return hand;
-    else
-        return null;
+    return straightFlush;
 }
 
 // check for any four of a kinds
