@@ -16,4 +16,5 @@ Main logic is in JavaScript, with some jQuery for DOM manipulation.  Bootstrap f
 * Right now this runs in the browser, convert to Node.js with server side if we want:
    * User accounts with stat tracking
 * Maybe convert to React/React Native eventually
+* Typescript in React
 * Dark mode theme?
