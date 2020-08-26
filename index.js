@@ -1,5 +1,4 @@
 // generate deck of cards
-
 const deck = ["A♥", "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9♥", "T♥", "J♥", "Q♥", "K♥",
 "A♣", "2♣", "3♣", "4♣", "5♣", "6♣", "7♣", "8♣", "9♣", "T♣", "J♣", "Q♣", "K♣",
 "A♦", "2♦", "3♦", "4♦", "5♦", "6♦", "7♦", "8♦", "9♦", "T♦", "J♦", "Q♦", "K♦",
@@ -15,11 +14,11 @@ let handInPlay;
 
 $(document).ready(function() {
     console.log( "ready!" );
-    findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
+    // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
     // findWinningHand(["2♠", "3♠", "4♠", "5♠", "6♦"]);
     // findWinningHand(["6♣", "3♠", "5♥", "6♠", "6♦"]);
-    // findWinningHand(["5♣", "J♠", "T♦", "9♥", "J♦"]);
+    findWinningHand(["J♣", "J♥", "5♦", "5♣", "J♠"]);
     // findWinningHand(["Q♦", "T♦", "T♠", "7♠", "A♦"]);
     // findWinningHand(["T♠", "2♦", "2♣", "T♣", "T♥"]);
     //subtractHands(["5♣", "3♠", "5♥", "8♠", "5♦"], ["5♣", "5♥", "5♦"])
@@ -46,6 +45,7 @@ function shuffleDeck() {
     return shuffledDeck;
 }
 
+// deal 5 cards from the playDeck
 function dealHand() {
     let hand = [];
     for(let i = 0; i < 5; i++) {
@@ -55,6 +55,7 @@ function dealHand() {
     return hand;
 }
 
+// display the hand of cards passed in as a parameter
 function displayHand(hand) {
     for(let i = 1; i <= 5; i++) {
         // let temp = $("<p></p>").text(hand[i-1]);
@@ -67,8 +68,14 @@ function displayHand(hand) {
     
 }
 
+// start a new round of the video poker
 function dealNewHand() {
     console.log("dealing a new hand");
+    // unhighlight all cards
+    for(let i = 1; i < 6; i++) {
+        $("#card" + i + "image").css('border', "none");
+    }
+
     $('.hold-btn').prop('disabled', false);
     let funcName = "dealFillInCards()";
     $("#dealButton").attr("onclick", funcName);
@@ -83,7 +90,7 @@ function dealNewHand() {
     const winningHand = findWinningHand(handInPlay);
 
     if(winningHand) {
-        highlightWinningCards(handInPlay, winningHand);
+        highlightWinningCards(handInPlay, winningHand.hand);
     }
 
 }
@@ -114,7 +121,7 @@ function dealFillInCards() {
 
 
     if(winningHand) {
-        highlightWinningCards(handInPlay, winningHand);
+        highlightWinningCards(handInPlay, winningHand.hand);
         console.log(winningHand.name);
         $("#winningHandSpan").text(winningHand.name);
     }
@@ -319,10 +326,14 @@ function checkFourOfAKind(handArray, hand) {
             returnHand.push(indexToCard(cardNum) + "♦");
             returnHand.push(indexToCard(cardNum) + "♥");
             returnHand.push(indexToCard(cardNum) + "♠");
+            fourCards = {
+                hand: returnHand,
+                name: "Four of a Kind"
+            };
         }
     }
 
-    return fourCards ? returnHand : null;
+    return fourCards;
 }
 
 function checkFullHouse(handArray, hand) {
@@ -333,13 +344,16 @@ function checkFullHouse(handArray, hand) {
 
     // if set of three, check if other two cards are a pair
     if(setOfThree) {
-        const remainingCards = subtractHands(hand, setOfThree);
+        const remainingCards = subtractHands(hand, setOfThree.hand);
         console.log(remainingCards + " are the remaining cards");
         console.log(remainingCards[0][0]);
         console.log(remainingCards[1][0]);
         if(remainingCards[0][0] == remainingCards[1][0]) {
             console.log("pair found.");
-            return hand;
+            return {
+                hand: hand,
+                name: "Full House"
+            }
         } else {
             return setOfThree;
         }
@@ -369,9 +383,14 @@ function checkThreeOfAKind(handArray, hand) {
                 if(handArray[index][cardNum] == 1)
                 returnHand.push("" + indexToCard(cardNum) + suitsConversion[index]);
             }
+
+            threeCards = {
+                hand: returnHand,
+                name: "Three of a Kind"
+            }
         }
     }
-    return threeCards ? returnHand : null;
+    return threeCards;
 }
 
 
