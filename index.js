@@ -17,7 +17,8 @@ $(document).ready(function() {
     // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
     // findWinningHand(["2♠", "3♠", "4♠", "5♠", "6♦"]);
-     findWinningHand(["Q♦", "3♠", "5♥", "Q♣", "6♦"]);
+    // findWinningHand(["Q♦", "3♠", "5♥", "Q♣", "6♦"]);
+     findWinningHand(["Q♣","2♦","4♦","T♦","A♦"]);
     //findWinningHand(["J♣", "J♥", "5♦", "5♣", "J♠"]);
     // findWinningHand(["Q♦", "T♦", "T♠", "7♠", "A♦"]);
     // findWinningHand(["T♠", "2♦", "2♣", "T♣", "T♥"]);
@@ -410,7 +411,7 @@ function checkFlush(handArray, hand) {
 
     for(let suit = 0; suit < 4; suit++) {
         let sum = 0;
-        for(let cardNum = 0; cardNum < 14; cardNum++) {
+        for(let cardNum = 1; cardNum < 14; cardNum++) {
             sum += handArray[suit][cardNum];
         }
         // console.log(sum);
