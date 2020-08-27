@@ -2,6 +2,20 @@
     visibility: hidden;
 }
 
+body {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+}
+
+.tableRow {
+  border-bottom: solid #333333 1px;
+}
+
+#payTableDiv {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 /* Button styling from https://blog.koalite.com/bbg/ */
 
 .btn-primary { 

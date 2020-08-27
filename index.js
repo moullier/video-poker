@@ -17,8 +17,8 @@ $(document).ready(function() {
     // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
     // findWinningHand(["2♠", "3♠", "4♠", "5♠", "6♦"]);
-    // findWinningHand(["6♣", "3♠", "5♥", "6♠", "6♦"]);
-    findWinningHand(["J♣", "J♥", "5♦", "5♣", "J♠"]);
+     findWinningHand(["Q♦", "3♠", "5♥", "Q♣", "6♦"]);
+    //findWinningHand(["J♣", "J♥", "5♦", "5♣", "J♠"]);
     // findWinningHand(["Q♦", "T♦", "T♠", "7♠", "A♦"]);
     // findWinningHand(["T♠", "2♦", "2♣", "T♣", "T♥"]);
     //subtractHands(["5♣", "3♠", "5♥", "8♠", "5♦"], ["5♣", "5♥", "5♦"])
@@ -75,6 +75,8 @@ function dealNewHand() {
     for(let i = 1; i < 6; i++) {
         $("#card" + i + "image").css('border', "none");
     }
+    $("#winningHandSpan").text("");
+    unholdAllCards();
 
     $('.hold-btn').prop('disabled', false);
     let funcName = "dealFillInCards()";
@@ -151,6 +153,7 @@ function generateImageURL(cardName) {
     return `./assets/images/${arrayName[0]}${suit}.jpg`;
 }
 
+// pass in a card index, if it is held, untoggle, otherwise toggle to hold
 function toggleHold(card) {
     let holdSpan = $("#card" + card + "hold");
 
@@ -162,6 +165,14 @@ function toggleHold(card) {
         heldCards[card - 1] = true;
     }
     console.log(heldCards);
+}
+
+function unholdAllCards() {
+    for(let i = 1; i < 6; i++) {
+        let holdSpan = $("#card" + i + "hold");
+        holdSpan.css("visibility", "hidden");
+        heldCards[i - 1] = false;
+    }
 }
 
 
@@ -340,7 +351,6 @@ function checkFullHouse(handArray, hand) {
     // check for three of a kind first
     let setOfThree = null;
     setOfThree = checkThreeOfAKind(handArray, hand);
-    console.log(setOfThree);
 
     // if set of three, check if other two cards are a pair
     if(setOfThree) {
@@ -408,9 +418,14 @@ function checkFlush(handArray, hand) {
         // if all cards are the same suit, we have a flush
         if(sum >= 5) {
             console.log('found a flush');
-            flush = hand;
+        
+            flush = {
+                hand: hand,
+                name: "Flush"
+            }
         }
     }
+
     return flush;
 }
 
@@ -438,7 +453,11 @@ function checkStraight(handArray, hand) {
         }
         
         if(sum === 5) {
-            straight = hand;
+            straight = {
+                hand: hand,
+                name: "Straight"
+            }
+                
             console.log("Straight found - first card is " + indexToCard(k));
         }
     }
@@ -468,15 +487,18 @@ function checkTwoPair(handArray, hand) {
     }
 
     if(numberOfPairs == 2) {
-        twoPair = true;
+        twoPair = {
+            hand: returnHand,
+            name: "Two Pair"
+        }
     }
 
-    return twoPair ? returnHand : null;
+    return twoPair;
 
 }
 
 function checkJacksOrBetter(handArray, hand) {
-    let jacksOrBetter = false;
+    let jacksOrBetter = null;
     let returnHand = [];
 
     const reducedArray = reduceHandArray(handArray, true);
@@ -487,12 +509,16 @@ function checkJacksOrBetter(handArray, hand) {
         console.log(reducedArray[i]);
         if(reducedArray[i] == 2) {
             console.log("found pair of " + indexToCard(i));
-            jacksOrBetter = true;
             returnHand = returnHand.concat(getCardsOfRank(hand, i));
+            jacksOrBetter = {
+                hand: returnHand,
+                name: "Jacks or Better"
+            }
+            console.log(jacksOrBetter.hand);
         }
     }
 
-    return jacksOrBetter ? returnHand : null;
+    return jacksOrBetter;
 }
 
 function highlightWinningCards(hand, winningHand) {

@@ -16,12 +16,13 @@
     <!-- minify NES.CSS -->
     <!-- <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" /> -->
     <link rel="stylesheet" href="./assets/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <title>Video Poker</title>
 </head>
 <body>
     <div class="container mt-2">
         <div class="border border-dark" id="payTableDiv">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     <strong>Hand</strong>
                 </div>
@@ -41,7 +42,7 @@
                     <strong>Bet 5</strong>
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Royal Flush
                 </div>
@@ -61,7 +62,7 @@
                     4000
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Straight Flush
                 </div>
@@ -81,7 +82,7 @@
                     250
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Four of a Kind
                 </div>
@@ -101,7 +102,7 @@
                     125
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Full House
                 </div>
@@ -121,7 +122,7 @@
                     45
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Flush
                 </div>
@@ -141,7 +142,7 @@
                     30
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Straight
                 </div>
@@ -161,7 +162,7 @@
                     20
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Three of a Kind
                 </div>
@@ -181,7 +182,7 @@
                     15
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Two Pair
                 </div>
@@ -201,7 +202,7 @@
                     10
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center tableRow">
                 <div class="col-2 text-center">
                     Jacks or Better
                 </div>
@@ -220,6 +221,11 @@
                 <div class="col-2 text-center">
                     5
                 </div>
+            </div>
+        </div>
+        <div class = "row text-center mt-3">
+            <div class="col-12">
+                <span id="winningHandSpan"></span>
             </div>
         </div>
         <div class="row justify-content-center">
@@ -249,14 +255,9 @@
                 <button class="btn btn-secondary hold-btn" disabled id="card5btn" value="5">Hold</button>
             </div>
         </div>
-        <div class = "row text-center mt-3">
+        <div class = "row text-center my-3">
             <div class="col-12">
                 <button class="btn btn-primary" id="dealButton" onclick="dealNewHand()">Deal</button>
-            </div>
-        </div>
-        <div class = "row text-center mt-3">
-            <div class="col-12">
-                <span id="winningHandSpan"></span>
             </div>
         </div>
     </div>
