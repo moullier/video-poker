@@ -1,4 +1,6 @@
-# Video Poker (Jacks or Better Varient)
+https://moullier.github.io/video-poker/
+
+# Video Poker (Jacks or Better Variant)
 
 ## Description
 
