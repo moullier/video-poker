@@ -32,7 +32,20 @@ $(document).ready(function() {
     // findWinningHand(["T♠", "2♦", "2♣", "T♣", "T♥"]);
     //subtractHands(["5♣", "3♠", "5♥", "8♠", "5♦"], ["5♣", "5♥", "5♦"])
 
+    document.getElementById('collapsible').onclick=toggleCollapsibleLabel;
+
+
 })
+
+// toggle show/hide in pay table label
+function toggleCollapsibleLabel()
+{
+    if($(this).text() === "+ View Pay Table") {
+        $(this).text("- Hide Pay Table");
+    } else {
+        $(this).text("+ View Pay Table");
+    }
+}
 
 // shuffle deck
 function shuffleDeck() {

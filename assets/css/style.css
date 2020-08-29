@@ -98,18 +98,3 @@ body {
     color: #1B8CBD; 
     background-color: #ffffff; 
   }
-
-
-
-.collapseBtn.btn.collapsed:before
-{
-    content:'+ View Pay Table';
-    display:block;
-    width:300px;
-}
-.collapseBtn.btn:before
-{
-    content:'- Hide Pay Table';
-    display:block;
-    width:300px;
-}
