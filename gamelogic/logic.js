@@ -634,3 +634,13 @@ $('.img-fluid').click(function(event){
         
     }
 });
+
+
+// Making all functions available in this 
+// module to exports that we have made 
+// so that we can import this module and 
+// use these functions whenever we want. 
+module.exports = { 
+    area, 
+    perimeter 
+} 

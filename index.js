@@ -1,3 +1,10 @@
+import { 
+    reduceHandArray, 
+    getCardsOfRank,
+    indexToCard,
+    subtractHands
+ } from './gamelogic/utilities.js';
+
 // generate deck of cards
 const deck = ["A♥", "2♥", "3♥", "4♥", "5♥", "6♥", "7♥", "8♥", "9♥", "T♥", "J♥", "Q♥", "K♥",
 "A♣", "2♣", "3♣", "4♣", "5♣", "6♣", "7♣", "8♣", "9♣", "T♣", "J♣", "Q♣", "K♣",
@@ -14,6 +21,7 @@ let handInPlay;
 
 $(document).ready(function() {
     console.log( "ready!" );
+    $("#dealButton").click(dealNewHand);
     // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
     // findWinningHand(["2♠", "3♠", "4♠", "5♠", "6♦"]);
@@ -77,11 +85,12 @@ function dealNewHand() {
         $("#card" + i + "image").css('border', "none");
     }
     $("#winningHandSpan").text("");
+    $("#winningHandSpan").css("visibility", "hidden");
     unholdAllCards();
 
     $('.hold-btn').prop('disabled', false);
-    let funcName = "dealFillInCards()";
-    $("#dealButton").attr("onclick", funcName);
+    $("#dealButton").off();
+    $("#dealButton").click(dealFillInCards);
     holdableState = true;
     playDeck = shuffleDeck();
     console.log(playDeck);
@@ -106,8 +115,8 @@ function dealFillInCards() {
     }
 
     $('.hold-btn').prop('disabled', true);
-    let funcName = "dealNewHand()";
-    $("#dealButton").attr("onclick", funcName);
+    $("#dealButton").off();
+    $("#dealButton").click(dealNewHand);
     holdableState = false;
 
     for(let i = 0; i < 5; i++) {
@@ -127,6 +136,7 @@ function dealFillInCards() {
         highlightWinningCards(handInPlay, winningHand.hand);
         console.log(winningHand.name);
         $("#winningHandSpan").text(winningHand.name);
+        $("#winningHandSpan").css("visibility", "visible");
     }
 
     
@@ -550,81 +560,81 @@ function highlightWinningCards(hand, winningHand) {
 // and adds it up for functions where the suit doesn't matter
 // second parameter is a boolean for whether the high ace should be included
 // as well as the low ace
-function reduceHandArray(handArray, withTwoAces) {
+// function reduceHandArray(handArray, withTwoAces) {
 
-    const maxLength = withTwoAces ? 14 : 13;
-    let reducedArray = [];
+//     const maxLength = withTwoAces ? 14 : 13;
+//     let reducedArray = [];
 
-    // reduce all the suits down to one array
-    for(let i = 0; i < maxLength; i++) {
+//     // reduce all the suits down to one array
+//     for(let i = 0; i < maxLength; i++) {
 
-        let sum = 0;
-        for(let j = 0; j < 4; j++) {
-            sum += handArray[j][i];
-        }
-        reducedArray.push(sum);
-    }
+//         let sum = 0;
+//         for(let j = 0; j < 4; j++) {
+//             sum += handArray[j][i];
+//         }
+//         reducedArray.push(sum);
+//     }
 
-    return reducedArray;
+//     return reducedArray;
 
-}
+// }
 
 // Get cards of a given rank in the hand passed in, and return them
-function getCardsOfRank(hand, rank) {
-    const displayRank = indexToCard(rank);
-    let returnHand = [];
+// function getCardsOfRank(hand, rank) {
+//     const displayRank = indexToCard(rank);
+//     let returnHand = [];
 
-    console.log(displayRank);
-    // iterate through hand and if card matchs the passed in rank,
-    // push the card on the hand to return
-    for(let i = 0; i < hand.length; i++) {
-        let card = hand[i];
-        if(displayRank == card[0]) {
-            returnHand.push(card);
-        }
-    }
+//     console.log(displayRank);
+//     // iterate through hand and if card matchs the passed in rank,
+//     // push the card on the hand to return
+//     for(let i = 0; i < hand.length; i++) {
+//         let card = hand[i];
+//         if(displayRank == card[0]) {
+//             returnHand.push(card);
+//         }
+//     }
 
 
-    console.log("returnhand = " + returnHand);
-    return returnHand;
-}
+//     console.log("returnhand = " + returnHand);
+//     return returnHand;
+// }
 
-// Converts an index from the handArray back to the appropriate card
-function indexToCard(arrayIndex) {
-    switch(arrayIndex) {
-        case 0:case 13:
-            return "A";
-        case 12:
-            return "K";
-        case 11:
-            return "Q";
-        case 10:
-            return "J";
-        case 9:
-            return "T";
-        default:
-            return arrayIndex + 1;
-    }
-}
+// // Converts an index from the handArray back to the appropriate card
+// function indexToCard(arrayIndex) {
+//     switch(arrayIndex) {
+//         case 0:case 13:
+//             return "A";
+//         case 12:
+//             return "K";
+//         case 11:
+//             return "Q";
+//         case 10:
+//             return "J";
+//         case 9:
+//             return "T";
+//         default:
+//             return arrayIndex + 1;
+//     }
+// }
 
-// takes two hand of cards as arguments, removes the cards in the second hand from the first
-// and returns the "difference"
-function subtractHands(hand1, hand2) {
-    let resultHand = [];
-    for(let i = 0; i < hand1.length; i++) {
-        let isMatch = false;
-        for(let j = 0; j < hand2.length; j++) {
-            if(hand1[i] == hand2[j]) {
-                isMatch = true;
-            }
-        }
-        if(!isMatch)
-            resultHand.push(hand1[i]);
-    }
+// // takes two hand of cards as arguments, removes the cards in the second hand from the first
+// // and returns the "difference"
+// function subtractHands(hand1, hand2) {
+//     let resultHand = [];
+//     for(let i = 0; i < hand1.length; i++) {
+//         let isMatch = false;
+//         for(let j = 0; j < hand2.length; j++) {
+//             if(hand1[i] == hand2[j]) {
+//                 isMatch = true;
+//             }
+//         }
+//         if(!isMatch)
+//             resultHand.push(hand1[i]);
+//     }
 
-    //console.log(resultHand);
-    return resultHand;
-}
+//     //console.log(resultHand);
+//     return resultHand;
+// }
 
 // event listeners
 

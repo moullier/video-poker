@@ -16,6 +16,41 @@ body {
   padding-right: 15px;
 }
 
+#winningHandSpan {
+  font-size: 24px;
+}
+
+#winningHandDiv {
+  height: 36px;
+}
+
+/* Card sizing for mobile responsiveness */
+
+.col-2 {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.hold-btn {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+@media only screen and (min-width: 768px) {
+  /* For desktop: */
+  .col-2 {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .hold-btn {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+}
+
+
 /* Button styling from https://blog.koalite.com/bbg/ */
 
 .btn-primary { 
@@ -63,3 +98,18 @@ body {
     color: #1B8CBD; 
     background-color: #ffffff; 
   }
+
+
+
+.collapseBtn.btn.collapsed:before
+{
+    content:'+ View Pay Table';
+    display:block;
+    width:300px;
+}
+.collapseBtn.btn:before
+{
+    content:'- Hide Pay Table';
+    display:block;
+    width:300px;
+}
