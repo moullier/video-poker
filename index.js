@@ -18,10 +18,18 @@ let backupCards;
 let heldCards = [false, false, false, false, false];
 let holdableState = false;
 let handInPlay;
+let cashBalance = 100;
+let currentBet = 0;
+let creditValue = 0.25;
 
 $(document).ready(function() {
     console.log( "ready!" );
+
+    // attach click listeners to buttons
     $("#dealButton").click(dealNewHand);
+    $("#bet1Button").click(bet1Credit);
+    $("#betMaxButton").click(betMaxCredit);
+    $("#cashBalanceDiv").text("$" + cashBalance.toFixed(2));
     // findWinningHand(["T♦", "J♦", "K♦", "A♦", "Q♦"]);
     // findWinningHand(["9♥", "T♥", "J♥", "Q♥", "K♥"]);
     // findWinningHand(["2♠", "3♠", "4♠", "5♠", "6♦"]);
@@ -32,7 +40,10 @@ $(document).ready(function() {
     // findWinningHand(["T♠", "2♦", "2♣", "T♣", "T♥"]);
     //subtractHands(["5♣", "3♠", "5♥", "8♠", "5♦"], ["5♣", "5♥", "5♦"])
 
+
     document.getElementById('collapsible').onclick=toggleCollapsibleLabel;
+
+
 
 
 })
@@ -104,6 +115,9 @@ function dealNewHand() {
     $('.hold-btn').prop('disabled', false);
     $("#dealButton").off();
     $("#dealButton").click(dealFillInCards);
+
+    makeBet();
+
     holdableState = true;
     playDeck = shuffleDeck();
     console.log(playDeck);
@@ -150,9 +164,12 @@ function dealFillInCards() {
         console.log(winningHand.name);
         $("#winningHandSpan").text(winningHand.name);
         $("#winningHandSpan").css("visibility", "visible");
+        payBet(winningHand.name);
     }
 
-    
+    // reset betting status
+    currentBet = 0;
+    $("#currentBetDiv").text("");
     
 }
 
@@ -566,88 +583,73 @@ function highlightWinningCards(hand, winningHand) {
 
 }
 
+// betting functions
+function bet1Credit() {
+    if(currentBet < 5) {
+        currentBet++;
+        $("#currentBetDiv").text(currentBet + " credits");
+    }
+}
 
-// Utility functions
+function betMaxCredit() {
+    if(currentBet < 5) {
+        currentBet = 5;
+        $("#currentBetDiv").text(currentBet + " credits");
+    }
+}
 
-// Takes in an array representing the cards in each suit (4 by 13 array)
-// and adds it up for functions where the suit doesn't matter
-// second parameter is a boolean for whether the high ace should be included
-// as well as the low ace
-// function reduceHandArray(handArray, withTwoAces) {
+function makeBet() {
+    cashBalance = cashBalance - creditValue * currentBet;
+    $("#cashBalanceDiv").text("$" + cashBalance.toFixed(2));
+}
 
-//     const maxLength = withTwoAces ? 14 : 13;
-//     let reducedArray = [];
+function payBet(winningHandName) {
+    console.log(`paying out on $(winningHandName)`);
 
-//     // reduce all the suits down to one array
-//     for(let i = 0; i < maxLength; i++) {
+    let winnings;
 
-//         let sum = 0;
-//         for(let j = 0; j < 4; j++) {
-//             sum += handArray[j][i];
-//         }
-//         reducedArray.push(sum);
-//     }
+    switch(winningHandName) {
+        case "Jacks or Better":
+            winnings = creditValue * currentBet;
+            break;
+        case "Two Pair":
+            winnings = 2 * creditValue * currentBet;
+            break;
+        case "Three of a Kind":
+            winnings = 3 * creditValue * currentBet;
+            break;
+        case "Straight":
+            winnings = 4 * creditValue * currentBet;
+            break;
+        case "Flush":
+            winnings = 6 * creditValue * currentBet;
+            break;
+        case "Full House":
+            winnings = 9 * creditValue * currentBet;
+            break;
+        case "Four of a Kind":
+            winnings = 25 * creditValue * currentBet;
+            break;
+        case "Straight Flush":
+            winnings = 50 * creditValue * currentBet;
+            break;
+        case "Royal Flush":
+            if(currentBet === 5) {
+                winnings = 800 * creditValue * currentBet;
+            } else {
+                winnings = 250 * creditValue * currentBet;
+            }
+            break;
+        default: 
+            console.log("hit default case in pay function, possible error?");
+            winnings = 0;
+            break;
+    }
 
-//     return reducedArray;
-
-// }
-
-// Get cards of a given rank in the hand passed in, and return them
-// function getCardsOfRank(hand, rank) {
-//     const displayRank = indexToCard(rank);
-//     let returnHand = [];
-
-//     console.log(displayRank);
-//     // iterate through hand and if card matchs the passed in rank,
-//     // push the card on the hand to return
-//     for(let i = 0; i < hand.length; i++) {
-//         let card = hand[i];
-//         if(displayRank == card[0]) {
-//             returnHand.push(card);
-//         }
-//     }
-
-
-//     console.log("returnhand = " + returnHand);
-//     return returnHand;
-// }
-
-// // Converts an index from the handArray back to the appropriate card
-// function indexToCard(arrayIndex) {
-//     switch(arrayIndex) {
-//         case 0:case 13:
-//             return "A";
-//         case 12:
-//             return "K";
-//         case 11:
-//             return "Q";
-//         case 10:
-//             return "J";
-//         case 9:
-//             return "T";
-//         default:
-//             return arrayIndex + 1;
-//     }
-// }
-
-// // takes two hand of cards as arguments, removes the cards in the second hand from the first
-// // and returns the "difference"
-// function subtractHands(hand1, hand2) {
-//     let resultHand = [];
-//     for(let i = 0; i < hand1.length; i++) {
-//         let isMatch = false;
-//         for(let j = 0; j < hand2.length; j++) {
-//             if(hand1[i] == hand2[j]) {
-//                 isMatch = true;
-//             }
-//         }
-//         if(!isMatch)
-//             resultHand.push(hand1[i]);
-//     }
-
-//     //console.log(resultHand);
-//     return resultHand;
-// }
+    cashBalance = cashBalance + winnings;
+    $("#cashBalanceDiv").text("$" + cashBalance.toFixed(2));
+    $("#cashWinningDiv").text("WIN: $" + winnings.toFixed(2));
+}
 
 // event listeners
 
