@@ -191,7 +191,7 @@ function generateImageURL(cardName) {
         suit = "S";    
     }
 
-    return `./assets/images/${arrayName[0]}${suit}.jpg`;
+    return `./assets/cards/${arrayName[0]}${suit}.jpg`;
 }
 
 // pass in a card index, if it is held, untoggle, otherwise toggle to hold
