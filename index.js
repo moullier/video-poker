@@ -585,14 +585,20 @@ function highlightWinningCards(hand, winningHand) {
 
 // betting functions
 function bet1Credit() {
+    //check if bet is already maxed out
     if(currentBet < 5) {
-        currentBet++;
-        $("#currentBetDiv").text(currentBet + " credits");
+        //check if increasing bet will take cash balance below zero
+        console.log((currentBet + 1) * creditValue);
+        console.log(cashBalance);
+        if((currentBet + 1) * creditValue <= cashBalance) {
+            currentBet++;
+            $("#currentBetDiv").text(currentBet + " credits");
+        }
     }
 }
 
 function betMaxCredit() {
-    if(currentBet < 5) {
+    if(currentBet < 5  && (currentBet + 1) * creditValue <= cashBalance) {
         currentBet = 5;
         $("#currentBetDiv").text(currentBet + " credits");
     }
