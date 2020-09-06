@@ -103,35 +103,39 @@ function displayHand(hand) {
 
 // start a new round of the video poker
 function dealNewHand() {
-    console.log("dealing a new hand");
-    // unhighlight all cards
-    for(let i = 1; i < 6; i++) {
-        $("#card" + i + "image").css('border', "none");
+    // check to make sure there's a bet before dealing a hand
+    if(currentBet > 0) {
+        console.log("dealing a new hand");
+        // unhighlight all cards
+        for(let i = 1; i < 6; i++) {
+            $("#card" + i + "image").css('border', "none");
+        }
+        $("#winningHandSpan").text("");
+        $("#winningHandSpan").css("visibility", "hidden");
+        unholdAllCards();
+    
+        $('.hold-btn').prop('disabled', false);
+        $('#bet1Button').prop('disabled', true);
+        $('#betMaxButton').prop('disabled', true);
+        $("#dealButton").off();
+        $("#dealButton").click(dealFillInCards);
+    
+        makeBet();
+    
+        holdableState = true;
+        playDeck = shuffleDeck();
+        console.log(playDeck);
+        handInPlay = dealHand();
+        console.log(handInPlay);
+        backupCards = dealHand();
+        console.log(backupCards);
+        displayHand(handInPlay);
+        const winningHand = findWinningHand(handInPlay);
+    
+        if(winningHand) {
+            highlightWinningCards(handInPlay, winningHand.hand);
+        }
     }
-    $("#winningHandSpan").text("");
-    $("#winningHandSpan").css("visibility", "hidden");
-    unholdAllCards();
-
-    $('.hold-btn').prop('disabled', false);
-    $("#dealButton").off();
-    $("#dealButton").click(dealFillInCards);
-
-    makeBet();
-
-    holdableState = true;
-    playDeck = shuffleDeck();
-    console.log(playDeck);
-    handInPlay = dealHand();
-    console.log(handInPlay);
-    backupCards = dealHand();
-    console.log(backupCards);
-    displayHand(handInPlay);
-    const winningHand = findWinningHand(handInPlay);
-
-    if(winningHand) {
-        highlightWinningCards(handInPlay, winningHand.hand);
-    }
-
 }
 
 function dealFillInCards() {
@@ -144,6 +148,8 @@ function dealFillInCards() {
     $('.hold-btn').prop('disabled', true);
     $("#dealButton").off();
     $("#dealButton").click(dealNewHand);
+    $('#bet1Button').prop('disabled', false);
+    $('#betMaxButton').prop('disabled', false);
     holdableState = false;
 
     for(let i = 0; i < 5; i++) {
@@ -168,8 +174,8 @@ function dealFillInCards() {
     }
 
     // reset betting status
-    currentBet = 0;
-    $("#currentBetDiv").text("");
+    // currentBet = 0;
+    // $("#currentBetDiv").text("");
     
 }
 
@@ -592,7 +598,14 @@ function bet1Credit() {
         console.log(cashBalance);
         if((currentBet + 1) * creditValue <= cashBalance) {
             currentBet++;
-            $("#currentBetDiv").text(currentBet + " credits");
+            $("#currentBetDiv").text(currentBet + " credit(s)");
+        }
+
+        $('#dealButton').removeAttr('disabled');
+    } else {
+        if(creditValue <= cashBalance) {
+            currentBet = 1;
+            $("#currentBetDiv").text(currentBet + " credit(s)");
         }
     }
 }
@@ -601,6 +614,7 @@ function betMaxCredit() {
     if(currentBet < 5  && (currentBet + 1) * creditValue <= cashBalance) {
         currentBet = 5;
         $("#currentBetDiv").text(currentBet + " credits");
+        $('#dealButton').removeAttr('disabled');
     }
 }
 
