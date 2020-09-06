@@ -12,7 +12,7 @@ Main logic is in JavaScript, with some jQuery for DOM manipulation.  Bootstrap f
 
 ## Feature Backlog
 
-* Add betting with standard 9-6 paytable
+~~* Add betting with standard 9-6 paytable~~ Included 9/4/2020
 * Add session tracking
 * Break code up in separate modules
 * Right now this runs in the browser, convert to Node.js with server side if we want:
