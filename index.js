@@ -105,15 +105,21 @@ function displayHand(hand) {
 function dealNewHand() {
     // check to make sure there's a bet before dealing a hand
     if(currentBet > 0) {
-        console.log("dealing a new hand");
+
         // unhighlight all cards
         for(let i = 1; i < 6; i++) {
             $("#card" + i + "image").css('border', "none");
         }
+
+        // reset winning indicators
         $("#winningHandSpan").text("");
+        $("#cashWinningDiv").text("");
         $("#winningHandSpan").css("visibility", "hidden");
+        
+        
         unholdAllCards();
     
+        // enable the hold buttons, disable the betting buttons while the hand is taking place
         $('.hold-btn').prop('disabled', false);
         $('#bet1Button').prop('disabled', true);
         $('#betMaxButton').prop('disabled', true);
@@ -138,8 +144,9 @@ function dealNewHand() {
     }
 }
 
+// handles the logic for the second half of the hand, after the user chose what cards to hold and
+// then hits deal again
 function dealFillInCards() {
-    console.log("dealing fill in cards");
 
     for(let i = 1; i < 6; i++) {
         $("#card" + i + "image").css('border', "none");
@@ -214,6 +221,7 @@ function toggleHold(card) {
     console.log(heldCards);
 }
 
+// set all cards to an unheld state
 function unholdAllCards() {
     for(let i = 1; i < 6; i++) {
         let holdSpan = $("#card" + i + "hold");
@@ -277,7 +285,7 @@ function findWinningHand(hand) {
         }
     }
 
-    console.log(handArray);
+    // console.log(handArray);
 
     let winningHand = checkRoyalFlush(handArray, hand);
     if(!winningHand) {
